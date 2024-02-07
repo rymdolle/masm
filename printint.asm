@@ -1,4 +1,4 @@
-ExitProcess PROTO
+ExitSuccess PROTO
 WriteInteger PROTO
 WriteLine PROTO
 ReadInteger PROTO
@@ -12,8 +12,7 @@ main PROC
     call WriteInteger
     call WriteLine
 
-    mov rcx, 0
-    call ExitProcess
+    call ExitSuccess
 main ENDP
 
 END

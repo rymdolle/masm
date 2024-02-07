@@ -1,6 +1,6 @@
 ReadConsole  PROTO
 WriteConsole PROTO
-ExitProcess PROTO
+ExitSuccess PROTO
 
 .data
 prompt BYTE "Enter your name: "
@@ -27,8 +27,7 @@ main PROC
     mov rdx, [bytes_read]
     call WriteConsole
 
-    mov rcx, 0
-    call ExitProcess
+    call ExitSuccess
 main ENDP
 
 END
