@@ -1,4 +1,5 @@
 .data
+buffer BYTE 128 dup(?)
 nl BYTE 10
 
 .code
@@ -10,23 +11,23 @@ ReadConsole PROC
 ReadConsole ENDP
 
 ReadInteger PROC
-    push 0
-    mov rsi, rsp                ; set buffer to stack ptr
-    mov rdx, QWORD              ; set count to size of qword
+    lea rsi, buffer             ; set buffer
+    mov rdx, SIZEOF buffer      ; set count to size of qword
     call ReadConsole
-    pop rcx
-    sub rax, 1                  ; dec by one
+    sub rax, 1                  ; ignore new line
     je done
     mov rdi, rax                ; counter
     mov rax, 0                  ; reset rax
-    mov rbx, 10                 ; set multiplier
+    mov rbx, 0                  ; buffer offset
+    mov rcx, 10                 ; set multiplier
 toreg:
-    mul rbx                     ; multiply by 10
-    sub cl, 48                  ; subtract '0'
-    add al, cl                  ; add byte
-    sar rcx, 8                  ; shift right
-    sub rdi, 1
-    jne toreg
+    mul rcx                     ; multiply by 10
+    mov dl, [rsi + rbx]         ; copy next char
+    sub dl, '0'                 ; subtract '0'
+    add al, dl                  ; add byte
+    add rbx, 1
+    cmp rbx, rdi
+    jl toreg
 done:
     ret
 ReadInteger ENDP
@@ -40,13 +41,13 @@ WriteConsole ENDP
 
 WriteInteger PROC
     mov rax, rsi                ; load integer to rax
-    mov rcx, 0                  ; reset len
     mov rbx, 10                 ; set divisor
+    mov rcx, 0                  ; reset len
     mov rdx, 0                  ; reset remainder
 
 len:
     div rbx                     ; rax/rbx
-    add rdx, 48                 ; add '0'
+    add rdx, '0'                ; add '0'
     push rdx                    ; push char
     mov rdx, 0                  ; reset rdx
     add rcx, 1                  ; increment length

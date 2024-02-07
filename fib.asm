@@ -22,7 +22,7 @@ fib:
         add rax, rbx            ; add next value to rax
         mov rbx, rdx            ; restore rdx to rbx
         sub rcx, 1              ; subtract 1 from counter
-        jne fib                 ; jmp if not zero
+        jg fib                  ; jmp if greater than zero
 
         mov rsi, rax
         call WriteInteger
