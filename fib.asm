@@ -1,12 +1,21 @@
 ExitProcess PROTO
+WriteInteger PROTO
+WriteLine PROTO
+ReadInteger PROTO
+WriteConsole PROTO
 
 .data
+prompt BYTE "Enter number to calculate Nth fibonacci number: "
 
 .code
 main PROC
+        lea rsi, prompt
+        mov rdx, SIZEOF prompt
+        call WriteConsole       ; write prompt
+        call ReadInteger        ; read user input
+        mov rcx, rax            ; set counter to user input
         mov rax, 0              ; reset accumulator
         mov rbx, 1              ; first value
-        mov rcx, 13             ; run fib 13 times
 
 fib:
         mov rdx, rax            ; save rax in rdx
@@ -15,7 +24,11 @@ fib:
         sub rcx, 1              ; subtract 1 from counter
         jne fib                 ; jmp if not zero
 
-        mov rcx, rax
+        mov rsi, rax
+        call WriteInteger
+        call WriteLine
+
+        mov rcx, 0
         call ExitProcess
 
 main ENDP
