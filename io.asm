@@ -41,28 +41,23 @@ WriteConsole ENDP
 
 WriteInteger PROC
     mov rax, rsi                ; load integer to rax
-    mov rbx, 10                 ; set divisor
-    mov rcx, 0                  ; reset len
-    mov rdx, 0                  ; reset remainder
+    mov rcx, 10                 ; set divisor
+    mov rbx, 0                  ; reset len
 
 len:
-    div rbx                     ; rax/rbx
+    mov rdx, 0                  ; reset remainder
+    div rcx                     ; rax/rbx
     add rdx, '0'                ; add '0'
-    push rdx                    ; push char
-    mov rdx, 0                  ; reset rdx
-    add rcx, 1                  ; increment length
+    sub rsp, 1
+    mov [rsp], dl
+    add rbx, 1                  ; increment length
     cmp rax, 0
     jne len
 
-    mov rbx, rcx                ; use rbx as counter
-
-print:
-    mov rdx, 1                  ; set WriteConsole count to 1
-    mov rsi, rsp                ; set WriteConsole buffer pointer
+    mov rdx, rbx                ; set WriteConsole count
+    mov rsi, rsp                ; set stack pointer to write
     call WriteConsole
-    add rsp, QWORD              ; pop stack
-    sub rbx, 1
-    jne print
+    add rsp, rbx                ; restore stack pointer
     ret
 WriteInteger ENDP
 
