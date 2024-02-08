@@ -47,7 +47,7 @@ WriteInteger PROC
 
 fromreg:
     mov rdx, 0                  ; reset remainder
-    div rcx                     ; rax/rbx
+    div rcx                     ; rax/rcx
     add rdx, '0'                ; add '0'
     sub rsp, 1                  ; reserve 1 byte on stack
     mov [rsp], dl               ; copy byte to stack
