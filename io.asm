@@ -44,7 +44,7 @@ WriteInteger PROC
     mov rcx, 10                 ; set divisor
     mov rbx, 0                  ; reset len
 
-len:
+fromreg:
     mov rdx, 0                  ; reset remainder
     div rcx                     ; rax/rbx
     add rdx, '0'                ; add '0'
@@ -52,7 +52,7 @@ len:
     mov [rsp], dl               ; copy byte to stack
     add rbx, 1                  ; increment length
     cmp rax, 0
-    jne len
+    jne fromreg
 
     mov rdx, rbx                ; set WriteConsole count
     mov rsi, rsp                ; set stack pointer to write
