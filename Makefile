@@ -26,6 +26,9 @@ hello: hello.o io.o exit.o
 printint: printint.o io.o exit.o
 	ld -e main -o $@ $^
 
-.PHONY: clean
+.PHONY: clean strip
+strip: $(bin)
+	strip $(bin)
+
 clean:
 	rm -f $(bin) *.o
