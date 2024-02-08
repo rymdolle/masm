@@ -19,11 +19,12 @@ ReadInteger PROC
     mov rdi, rax                ; counter
     mov rax, 0                  ; reset rax
     mov rbx, 0                  ; buffer offset
-    mov rcx, 10                 ; set multiplier
 toreg:
-    mul rcx                     ; multiply by 10
     mov dl, [rsi + rbx]         ; copy next char
     sub dl, '0'                 ; subtract '0'
+    cmp dl, 9                   ; ensure value between 0-9
+    ja done                     ; unsigned cmp, jmp if greater than 9
+    imul rax, 10                ; multiply by 10
     add al, dl                  ; add byte
     add rbx, 1
     cmp rbx, rdi
