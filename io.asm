@@ -48,8 +48,8 @@ len:
     mov rdx, 0                  ; reset remainder
     div rcx                     ; rax/rbx
     add rdx, '0'                ; add '0'
-    sub rsp, 1
-    mov [rsp], dl
+    sub rsp, 1                  ; reserve 1 byte on stack
+    mov [rsp], dl               ; copy byte to stack
     add rbx, 1                  ; increment length
     cmp rax, 0
     jne len
