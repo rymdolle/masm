@@ -1,34 +1,31 @@
+AS=uasm
+ASFLAGS=-q -10 -elf64
+LDFLAGS=-e main
+BINDIR=bin
 bin=fib hello printint
+APPS := $(addprefix ./$(BINDIR)/,$(bin))
 
-all: $(bin)
+all: $(APPS) $(BINDIR)
 
-fib.o: fib.asm
-	uasm -q -10 -elf64 $<
+$(BINDIR):
+	mkdir -p $(BINDIR)
 
-printint.o: printint.asm
-	uasm -q -10 -elf64 $<
+%.o: %.asm
+	$(AS) $(ASFLAGS) $<
 
-exit.o: exit.asm
-	uasm -q -10 -elf64 $<
+$(BINDIR)/fib: fib.o exit.o io.o
+	ld $(LDFLAGS) -o $@ $^
 
-io.o: io.asm
-	uasm -q -10 -elf64 $<
+$(BINDIR)/hello: hello.o io.o exit.o
+	ld $(LDFLAGS) -o $@ $^
 
-hello.o: hello.asm
-	uasm -q -10 -elf64 $<
-
-fib: fib.o exit.o io.o
-	ld -e main -o $@ $^
-
-hello: hello.o io.o exit.o
-	ld -e main -o $@ $^
-
-printint: printint.o io.o exit.o
-	ld -e main -o $@ $^
+$(BINDIR)/printint: printint.o io.o exit.o
+	ld $(LDFLAGS) -o $@ $^
 
 .PHONY: clean strip
-strip: $(bin)
-	strip $(bin)
+strip: all
+	strip $(APPS)
 
 clean:
-	rm -f $(bin) *.o
+	$(RM) *.o
+	$(RM) -r $(BINDIR)
