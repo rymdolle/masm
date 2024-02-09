@@ -15,12 +15,12 @@ main PROC
         call ReadInteger        ; read user input
         mov rcx, rax            ; set counter to user input
         mov rax, 0              ; reset accumulator
-        mov rbx, 1              ; first value
+        mov rdi, 1              ; first value
 
 fib:
         mov rdx, rax            ; save rax in rdx
-        add rax, rbx            ; add next value to rax
-        mov rbx, rdx            ; restore rdx to rbx
+        add rax, rdi            ; add next value to rax
+        mov rdi, rdx            ; restore rdx to rdi
         sub rcx, 1              ; subtract 1 from counter
         jg fib                  ; jmp if greater than zero
 

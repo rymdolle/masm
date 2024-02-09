@@ -4,8 +4,8 @@ nl BYTE 10
 
 .code
 ReadConsole PROC
-    mov rdi, 0
-    mov rax, 0
+    mov rdi, 0                  ; fileno stdin
+    mov rax, 0                  ; read syscall code
     syscall
     ret
 ReadConsole ENDP
@@ -18,24 +18,23 @@ ReadInteger PROC
     je done
     mov rdi, rax                ; counter
     mov rax, 0                  ; reset rax
-    mov rbx, 0                  ; buffer offset
 toreg:
-    mov dl, [rsi + rbx]         ; copy next char
+    mov dl, [rsi]               ; copy next char
     sub dl, '0'                 ; subtract '0'
     cmp dl, 9                   ; ensure value between 0-9
     ja done                     ; unsigned cmp, jmp if greater than 9
     imul rax, 10                ; multiply by 10
     add al, dl                  ; add byte
-    add rbx, 1
-    cmp rbx, rdi
-    jl toreg
+    add rsi, 1
+    sub rdi, 1
+    jne toreg
 done:
     ret
 ReadInteger ENDP
 
 WriteConsole PROC
-    mov rdi, 1
-    mov rax, 1
+    mov rdi, 1                  ; fileno stdout
+    mov rax, 1                  ; write syscall code
     syscall
     ret
 WriteConsole ENDP
@@ -43,7 +42,7 @@ WriteConsole ENDP
 WriteInteger PROC
     mov rax, rsi                ; load integer to rax
     mov rcx, 10                 ; set divisor
-    mov rbx, 0                  ; reset len
+    mov rdi, 0                  ; reset len
 
 fromreg:
     mov rdx, 0                  ; reset remainder
@@ -51,14 +50,16 @@ fromreg:
     add rdx, '0'                ; add '0'
     sub rsp, 1                  ; reserve 1 byte on stack
     mov [rsp], dl               ; copy byte to stack
-    add rbx, 1                  ; increment length
+    add rdi, 1                  ; increment length
     cmp rax, 0
     jne fromreg
 
-    mov rdx, rbx                ; set WriteConsole count
+    mov rdx, rdi                ; set WriteConsole count
     mov rsi, rsp                ; set stack pointer to write
+    push rdi                    ; save counter
     call WriteConsole
-    add rsp, rbx                ; restore stack pointer
+    pop rdi
+    add rsp, rdi                ; restore stack pointer
     ret
 WriteInteger ENDP
 
