@@ -2,7 +2,7 @@ AS=uasm
 ASFLAGS=-q -10 -elf64
 LDFLAGS=-e main
 BINDIR=bin
-bin=fib hello printint
+bin=fib hello printint strtest
 APPS := $(addprefix ./$(BINDIR)/,$(bin))
 
 all: $(APPS) $(BINDIR)
@@ -20,6 +20,9 @@ $(BINDIR)/hello: hello.o io.o exit.o
 	ld $(LDFLAGS) -o $@ $^
 
 $(BINDIR)/printint: printint.o io.o exit.o
+	ld $(LDFLAGS) -o $@ $^
+
+$(BINDIR)/strtest: strtest.o io.o exit.o string.o
 	ld $(LDFLAGS) -o $@ $^
 
 .PHONY: clean strip
