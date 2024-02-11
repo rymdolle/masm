@@ -9,8 +9,8 @@ prompt BYTE "Enter number to calculate Nth fibonacci number: "
 
 .code
 main PROC
-        lea rsi, prompt
-        mov rdx, SIZEOF prompt
+        lea rdi, prompt
+        mov rsi, SIZEOF prompt
         call WriteConsole       ; write prompt
         call ReadInteger        ; read user input
         mov rcx, rax            ; set counter to user input
@@ -24,7 +24,7 @@ fib:
         sub rcx, 1              ; subtract 1 from counter
         jg fib                  ; jmp if greater than zero
 
-        mov rsi, rax
+        mov rdi, rax
         call WriteInteger
         call WriteLine
         call ExitSuccess

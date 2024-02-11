@@ -8,7 +8,7 @@ ReadInteger PROTO
 .code
 main PROC
     call ReadInteger
-    mov rsi, rax
+    mov rdi, rax
     call WriteInteger
     call WriteLine
 

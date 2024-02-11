@@ -17,7 +17,7 @@ main PROC
     lea rdi, user
     mov rsi, 90
     call strnlen
-    mov rsi, rax
+    mov rdi, rax
     call WriteInteger
     call WriteLine
 
@@ -25,21 +25,21 @@ main PROC
     lea rdi, zuser
     mov rsi, 128
     call strnlen
-    mov rsi, rax
+    mov rdi, rax
     call WriteInteger
     call WriteLine
 
 ;; strlen
     lea rdi, user
     call strlen
-    mov rsi, rax
+    mov rdi, rax
     call WriteInteger
     call WriteLine
 
 ;; strlen zero length
     lea rdi, zuser
     call strlen
-    mov rsi, rax
+    mov rdi, rax
     call WriteInteger
     call WriteLine
 
@@ -51,8 +51,8 @@ main PROC
     mov rsi, 'a'
     mov rdx, 8
     call memset
-    mov rsi, rsp
-    mov rdx, 8
+    mov rdi, rsp
+    mov rsi, 8
     call WriteConsole
     call WriteLine
 
@@ -61,8 +61,8 @@ main PROC
     lea rsi, memdata
     mov rdx, 8
     call memcpy
-    mov rsi, rsp
-    mov rdx, 8
+    mov rdi, rsp
+    mov rsi, 8
     call WriteConsole
     call WriteLine
 

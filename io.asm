@@ -1,9 +1,8 @@
 .data
-buffer BYTE 128 dup(?)
-nl BYTE 10
-
 .code
 ReadConsole PROC
+    mov rdx, rsi
+    mov rsi, rdi
     mov rdi, 0                  ; fileno stdin
     mov rax, 0                  ; read syscall code
     syscall
@@ -11,15 +10,17 @@ ReadConsole PROC
 ReadConsole ENDP
 
 ReadInteger PROC
-    lea rsi, buffer             ; set buffer
-    mov rdx, SIZEOF buffer      ; set count to size of qword
+    sub rsp, 128
+    mov rdi, rsp                ; set buffer
+    mov rsi, 128                ; set count to size of qword
     call ReadConsole
     sub rax, 1                  ; ignore new line
     je done
     mov rdi, rax                ; counter
     mov rax, 0                  ; reset rax
+    mov rsi, 0
 toreg:
-    mov dl, [rsi]               ; copy next char
+    mov dl, [rsp + rsi]         ; copy next char
     sub dl, '0'                 ; subtract '0'
     cmp dl, 9                   ; ensure value between 0-9
     ja done                     ; unsigned cmp, jmp if greater than 9
@@ -29,10 +30,13 @@ toreg:
     sub rdi, 1
     jne toreg
 done:
+    add rsp, 128
     ret
 ReadInteger ENDP
 
 WriteConsole PROC
+    mov rdx, rsi
+    mov rsi, rdi
     mov rdi, 1                  ; fileno stdout
     mov rax, 1                  ; write syscall code
     syscall
@@ -40,7 +44,7 @@ WriteConsole PROC
 WriteConsole ENDP
 
 WriteInteger PROC
-    mov rax, rsi                ; load integer to rax
+    mov rax, rdi                ; load integer to rax
     mov rcx, 10                 ; set divisor
     mov rdi, 0                  ; reset len
 
@@ -54,19 +58,22 @@ fromreg:
     cmp rax, 0
     jne fromreg
 
-    mov rdx, rdi                ; set WriteConsole count
-    mov rsi, rsp                ; set stack pointer to write
-    push rdi                    ; save counter
+    mov rsi, rdi                ; set WriteConsole count
+    mov rdi, rsp                ; set stack pointer to write
+    push rsi                    ; save counter
     call WriteConsole
-    pop rdi
-    add rsp, rdi                ; restore stack pointer
+    pop rax
+    add rsp, rax                ; restore stack pointer
     ret
 WriteInteger ENDP
 
 WriteLine PROC
-    lea rsi, nl
-    mov rdx, 1
+    sub rsp, 1
+    mov BYTE PTR [rsp], 10
+    mov rdi, rsp
+    mov rsi, 1
     call WriteConsole
+    add rsp, 1
     ret
 WriteLine ENDP
 

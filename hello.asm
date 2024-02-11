@@ -10,21 +10,21 @@ bytes_read QWORD ?
 
 .code
 main PROC
-    lea rsi, prompt
-    mov rdx, LENGTHOF prompt
+    lea rdi, prompt
+    mov rsi, LENGTHOF prompt
     call WriteConsole
 
-    lea rsi, user
-    mov rdx, 128
+    lea rdi, user
+    mov rsi, 128
     call ReadConsole
     mov [bytes_read], rax
 
-    lea rsi, text
-    mov rdx, LENGTHOF text
+    lea rdi, text
+    mov rsi, LENGTHOF text
     call WriteConsole
 
-    lea rsi, user
-    mov rdx, [bytes_read]
+    lea rdi, user
+    mov rsi, [bytes_read]
     call WriteConsole
 
     call ExitSuccess
